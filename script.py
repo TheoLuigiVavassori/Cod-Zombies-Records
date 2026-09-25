@@ -1,12 +1,3 @@
-# Baixa e instala o Google Chrome Oficial no servidor do Colab
-!wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-!sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-!apt-get -y update > /dev/null 2>&1
-!apt-get install -y google-chrome-stable > /dev/null 2>&1
-!pip install selenium webdriver-manager > /dev/null 2>&1
-
-print("✅ Chrome Oficial instalado com sucesso! Pode rodar o Bloco 2.")
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -129,38 +120,3 @@ with open('recordes.json', 'w') as arquivo:
     json.dump(recordes_finais, arquivo, indent=4)
 
 print("\n✅ Sucesso absoluto! O arquivo 'recordes.json' completo foi gerado.")
-
-name: Atualizar JSON (Meia-noite Brasília)
-
-on:
-  schedule:
-    # 03:00 UTC equivale a 00:00 no horário de Brasília (UTC-3)
-    - cron: '0 3 * * *'
-  workflow_dispatch: # Cria um botão para você testar manualmente quando quiser
-
-jobs:
-  atualizar:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Acessar a pasta do repositório
-        uses: actions/checkout@v3
-
-      - name: Ligar o Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      # Se o seu código usa bibliotecas externas, descomente (tire o #) da linha abaixo:
-      # - run: pip install -r requirements.txt
-
-      - name: Rodar o seu código
-        run: python script.py
-
-      - name: Salvar o novo JSON na pasta
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "Robo Automático"
-          git add dados.json
-          git commit -m "Atualizando dados da meia-noite" || echo "Sem mudanças hoje"
-          git push
